@@ -1,5 +1,6 @@
 import Link from "next/link";
 import SearchBar from "./SearchBar";
+import FavoritesBadge from "./FavoritesBadge";
 
 export default function NavBar(){
   return (
@@ -9,6 +10,7 @@ export default function NavBar(){
           <Link href="/" className="font-bold tracking-tight text-[17px]">🎬 Movie Explorer</Link>
           <div className="flex items-center gap-2">
             <SearchBar />
+            <FavoritesBadge />
             <Link href="https://www.themoviedb.org/" target="_blank" className="btn">
               TMDB
             </Link>

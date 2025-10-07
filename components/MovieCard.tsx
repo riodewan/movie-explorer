@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Movie } from "@/lib/types";
 import { posterUrl, formatDate } from "@/lib/tmdb";
 import RatingStars from "./RatingStars";
+import FavoriteButton from "./FavoriteButton";
 
 export default function MovieCard({ movie }: { movie: Movie }) {
   const title = movie.title || movie.name || "Untitled";
@@ -10,6 +11,9 @@ export default function MovieCard({ movie }: { movie: Movie }) {
 
   return (
     <Link href={`/movies/${movie.id}`} className="g-border surface spot float block overflow-hidden">
+    <div className="absolute right-2 top-2 z-[2]">
+      <FavoriteButton id={movie.id} size={34} />
+    </div>
       <div className="relative aspect-[2/3]">
         {poster ? (
           <Image
