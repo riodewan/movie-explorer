@@ -27,12 +27,8 @@ Aplikasi eksplorasi film berbasis **TMDB** dengan UI modern: kategori, pencarian
 
 ## 🖼️ Screenshot
 
-Letakkan gambar di `/public` lalu rujuk di sini.
-
-```md
 ![Home](./public/home.png)
 ![Detail](./public/detail.png)
-```
 
 ---
 
@@ -63,39 +59,6 @@ TMDB_API_LANG=id-ID
 ```bash
 npm run dev
 # buka http://localhost:3000
-```
-
----
-
-## 📁 Struktur Direktori (ringkas)
-
-```
-app/
-  api/movies/batch/route.ts   # API batched detail untuk Favorites
-  discover/page.tsx           # Discover by Genre
-  favorites/page.tsx          # Halaman Favorites
-  movies/[id]/page.tsx        # Detail film + trailer modal
-  search/page.tsx             # Hasil pencarian
-  sitemap.ts                  # (opsional) SEO
-  robots.ts                   # (opsional) SEO
-  layout.tsx
-  globals.css                 # Tailwind v4 CSS-first (@theme inline)
-components/
-  NavBar.tsx
-  SearchBar.tsx
-  MovieCard.tsx
-  MovieGrid.tsx
-  Pagination.tsx
-  CategoryTabs.tsx
-  TrailerPlayer.tsx
-  FavoriteButton.tsx
-  GenreFilter.tsx
-  SectionHeader.tsx
-lib/
-  tmdb.ts                     # Helper TMDB (fetch, images, videos, discover)
-  types.ts
-public/
-  og.png                      # (opsional) OG image default
 ```
 
 ## ⚙️ Script NPM
