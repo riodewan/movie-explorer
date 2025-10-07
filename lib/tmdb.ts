@@ -12,6 +12,8 @@ export type Video = {
   name: string;
 };
 
+export type Genre = { id: number; name: string };
+
 function buildUrl(
   path: string,
   params: Record<string, string | number | boolean | undefined> = {}
@@ -151,4 +153,34 @@ export function pickBestYouTubeTrailer(videos: Video[]): string | null {
     (/\bofficial\b/i.test(v.name) ? 0.5 : 0);
   yt.sort((a, b) => score(b) - score(a));
   return yt[0]?.key ?? null;
+}
+
+/* ---------- Genres & Discover ---------- */
+
+export async function getGenres() {
+  const url = new URL(`${BASE_URL}/genre/movie/list`);
+  url.searchParams.set("api_key", API_KEY!);
+  url.searchParams.set("language", DEFAULT_LANG);
+  const res = await fetch(url.toString(), { next: { revalidate: 86400 } }); // 1 hari
+  if (!res.ok) return [] as Genre[];
+  const data = await res.json();
+  return (data.genres || []) as Genre[];
+}
+
+export async function discoverMovies(opts: {
+  page?: number;
+  with_genres?: string;
+  sort_by?: "popularity.desc" | "vote_average.desc" | "release_date.desc";
+}) {
+  const url = new URL(`${BASE_URL}/discover/movie`);
+  url.searchParams.set("api_key", API_KEY!);
+  url.searchParams.set("language", DEFAULT_LANG);
+  if (opts.page) url.searchParams.set("page", String(opts.page));
+  if (opts.with_genres) url.searchParams.set("with_genres", opts.with_genres);
+  url.searchParams.set("sort_by", opts.sort_by || "popularity.desc");
+  url.searchParams.set("include_adult", "false");
+
+  const res = await fetch(url.toString(), { next: { revalidate: REVALIDATE_SEC } });
+  if (!res.ok) throw new Error(`Failed to discover movies (status ${res.status}).`);
+  return (await res.json()) as PagedResponse<Movie>;
 }
