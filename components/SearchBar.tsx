@@ -1,28 +1,56 @@
-'use client';
+"use client";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-
-export default function SearchBar({ placeholder = 'Cari film...' }: { placeholder?: string }) {
-  const [q, setQ] = useState('');
+export default function SearchBar({ placeholder = "Cari film..." }: { placeholder?: string }) {
+  const [q, setQ] = useState("");
   const router = useRouter();
 
-  function onSubmit(e: React.FormEvent) {
+  useEffect(() => {
+    const last = localStorage.getItem("q-last");
+    if (last) setQ(last);
+  }, []);
+
+  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+    const form = e.currentTarget;
+    const input = form.querySelector<HTMLInputElement>('input[name="query"]');
+    const val = (input?.value || "").trim();
+    if (!val) {
+      e.preventDefault();
+      return;
+    }
+    localStorage.setItem("q-last", val);
     e.preventDefault();
-    const query = q.trim();
-    if (!query) return;
-    router.push(`/search?query=${encodeURIComponent(query)}`);
+    router.push(`/search?query=${encodeURIComponent(val)}`);
   }
 
   return (
-    <form onSubmit={onSubmit} className="flex w-full max-w-md gap-2">
+    <form
+      action="/search"
+      method="GET"
+      onSubmit={onSubmit}
+      className="flex w-full max-w-md items-center gap-2"
+    >
       <input
+        name="query"
         value={q}
         onChange={(e) => setQ(e.target.value)}
-        className="flex-1 rounded-md border px-3 py-2 outline-none"
         placeholder={placeholder}
+        className="flex-1 rounded-full px-4 py-2 text-sm outline-none"
+        style={{
+          background: "color-mix(in oklab, var(--fg) 6%, transparent)",
+          border: "1px solid var(--border)",
+          color: "var(--fg)",
+          boxShadow: "0 0 0 0px var(--ring)",
+        }}
+        onFocus={(e) =>
+          (e.currentTarget.style.boxShadow = `0 0 0 3px ${getComputedStyle(document.documentElement).getPropertyValue(
+            "--ring"
+          )}`)
+        }
+        onBlur={(e) => (e.currentTarget.style.boxShadow = "0 0 0 0px var(--ring)")}
       />
-      <button className="rounded-md border px-4 py-2 hover:bg-gray-50">Cari</button>
+      <button type="submit" className="btn">Cari</button>
     </form>
   );
 }

@@ -64,3 +64,10 @@ export function formatDate(d?: string) {
     return new Date(d).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
   } catch { return d; }
 }
+
+export async function getByCategory(category: "popular" | "now_playing" | "top_rated" | "upcoming", page = 1) {
+  const url = buildUrl(`movie/${category}`, { page });
+  const res = await fetch(url, { next: { revalidate: REVALIDATE_SEC } });
+  if (!res.ok) throw new Error(`Failed to fetch ${category} movies (status ${res.status}).`);
+  return (await res.json()) as PagedResponse<Movie>;
+}

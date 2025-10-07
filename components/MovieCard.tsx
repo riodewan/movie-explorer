@@ -1,33 +1,35 @@
-import Image from 'next/image';
-import Link from 'next/link';
-import { Movie } from '@/lib/types';
-import { posterUrl, formatDate } from '@/lib/tmdb';
+import Image from "next/image";
+import Link from "next/link";
+import { Movie } from "@/lib/types";
+import { posterUrl, formatDate } from "@/lib/tmdb";
+import RatingStars from "./RatingStars";
 
 export default function MovieCard({ movie }: { movie: Movie }) {
-  const title = movie.title || movie.name || 'Untitled';
-  const poster = posterUrl(movie.poster_path, 'w342');
+  const title = movie.title || movie.name || "Untitled";
+  const poster = posterUrl(movie.poster_path, "w342");
 
   return (
-    <Link href={`/movies/${movie.id}`} className="group overflow-hidden rounded-xl border bg-white hover:shadow-md">
-      <div className="relative aspect-[2/3] w-full">
+    <Link href={`/movies/${movie.id}`} className="g-border surface spot float block overflow-hidden">
+      <div className="relative aspect-[2/3]">
         {poster ? (
           <Image
             src={poster}
             alt={title}
             fill
-            className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
-            sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 20vw"
-            priority={false}
+            sizes="(max-width:768px)50vw,(max-width:1200px)25vw,20vw"
+            className="object-cover"
           />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center bg-gray-100 text-gray-400">No Image</div>
-        )}
+        ) : <div className="h-full w-full skel" />}
+        <div className="absolute inset-x-0 bottom-0 h-20"
+             style={{background:"linear-gradient(to top, rgba(0,0,0,.45), transparent)"}} />
       </div>
-      <div className="space-y-1 p-3">
-        <h3 className="line-clamp-1 font-semibold">{title}</h3>
-        <p className="text-sm text-gray-500">
-          {formatDate(movie.release_date || movie.first_air_date)} · ⭐ {movie.vote_average?.toFixed(1) ?? '-'}
-        </p>
+
+      <div className="p-3">
+        <h3 className="truncate text-[15px] font-semibold">{title}</h3>
+        <div className="mt-1 flex items-center justify-between text-xs" style={{color:"var(--muted)"}}>
+          <span>{formatDate(movie.release_date || movie.first_air_date)}</span>
+          <RatingStars rating={movie.vote_average ?? 0}/>
+        </div>
       </div>
     </Link>
   );

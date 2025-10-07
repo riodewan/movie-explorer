@@ -1,41 +1,40 @@
-import Link from 'next/link';
+import Link from "next/link";
 
 type Props = {
-  page: number;
-  totalPages: number;
-  basePath: string;
+  page: number; totalPages: number; basePath: string;
   params?: Record<string, string | number | undefined>;
 };
+const MAX = 500;
 
 export default function Pagination({ page, totalPages, basePath, params = {} }: Props) {
+  const tp = Math.min(totalPages, MAX);
   const prev = Math.max(1, page - 1);
-  const next = Math.min(totalPages, page + 1);
+  const next = Math.min(tp, page + 1);
 
-  function buildHref(p: number) {
+  const build = (p:number)=>{
     const usp = new URLSearchParams();
-    Object.entries(params).forEach(([k, v]) => {
-      if (v !== undefined) usp.set(k, String(v));
-    });
-    usp.set('page', String(p));
-    const qs = usp.toString();
-    return qs ? `${basePath}?${qs}` : `${basePath}`;
-  }
+    Object.entries(params).forEach(([k,v])=> v!==undefined && usp.set(k,String(v)));
+    usp.set("page", String(p));
+    const qs = usp.toString(); return qs? `${basePath}?${qs}` : basePath;
+  };
+
+  const around = [page-1,page,page+1].filter(p=>p>=1 && p<=tp);
 
   return (
-    <div className="mt-6 flex items-center justify-center gap-3">
-      <Link
-        href={buildHref(prev)}
-        className={`rounded-md border px-3 py-1 ${page === 1 ? 'pointer-events-none opacity-40' : 'hover:bg-gray-50'}`}
-      >
-        ← Prev
-      </Link>
-      <span className="text-sm text-gray-600">Halaman {page} / {Math.min(totalPages, 500)}</span>
-      <Link
-        href={buildHref(next)}
-        className={`rounded-md border px-3 py-1 ${page >= totalPages ? 'pointer-events-none opacity-40' : 'hover:bg-gray-50'}`}
-      >
-        Next →
-      </Link>
-    </div>
+    <nav className="mt-8 flex items-center justify-center gap-2">
+      <Link className="btn" href={build(1)} aria-label="First">«</Link>
+      <Link className="btn" href={build(prev)} aria-label="Prev">←</Link>
+
+      <div className="hidden sm:flex items-center gap-2">
+        {around[0] > 1 && <span className="chip">…</span>}
+        {around.map(p =>
+          <Link key={p} href={build(p)} className={`btn ${p===page? 'btn-primary': ''}`}>{p}</Link>
+        )}
+        {around.at(-1)! < tp && <span className="chip">…</span>}
+      </div>
+
+      <Link className="btn" href={build(next)} aria-label="Next">→</Link>
+      <Link className="btn" href={build(tp)} aria-label="Last">»</Link>
+    </nav>
   );
 }

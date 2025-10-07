@@ -1,12 +1,19 @@
-import Link from 'next/link';
-import SearchBar from './SearchBar';
+import Link from "next/link";
+import SearchBar from "./SearchBar";
 
-export default function NavBar() {
+export default function NavBar(){
   return (
-    <header className="sticky top-0 z-20 border-b bg-white/80 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
-        <Link href="/" className="text-lg font-bold">🎬 Movie Explorer</Link>
-        <SearchBar />
+    <header className="sticky top-3 z-50">
+      <div className="container-max">
+        <div className="glass g-border flex items-center justify-between gap-3 px-4 py-3">
+          <Link href="/" className="font-bold tracking-tight text-[17px]">🎬 Movie Explorer</Link>
+          <div className="flex items-center gap-2">
+            <SearchBar />
+            <Link href="https://www.themoviedb.org/" target="_blank" className="btn">
+              TMDB
+            </Link>
+          </div>
+        </div>
       </div>
     </header>
   );
