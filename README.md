@@ -1,36 +1,114 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🎬 Movie Explorer — Next.js 15 + Tailwind v4
 
-## Getting Started
+Aplikasi eksplorasi film berbasis **TMDB** dengan UI modern: kategori, pencarian, detail dengan trailer YouTube, **favorites** (localStorage), dan **discover by genre**. Dibangun dengan **Next.js 15 (App Router)** + **Tailwind CSS v4**.
 
-First, run the development server:
+## ✨ Fitur
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Home**: kategori *Popular / Now Playing / Top Rated / Upcoming* dengan pagination.
+- **Search**: form GET → `/search?query=...` (progressive enhancement).
+- **Detail Film**: backdrop sinematik, genre chips, rating, dan **Trailer modal (YouTube)**  
+  ↳ Trailer otomatis **fallback**: `id-ID` → `en-US` → default bila tidak tersedia.
+- **Favorites / Watchlist**: simpan ID film ke **localStorage** (ikon hati) + halaman **/favorites** (batched fetch via API).
+- **Discover by Genre**: halaman **/discover** dengan filter genre (toggle chips) + pagination.
+- **UI Modern**: glass, gradient border, spotlight hover, skeleton shimmer, tombol “pill”.
+- **Performa**: Next Image, ISR (revalidate), server components.
+- **Aksesibilitas**: modal trailer dengan `role="dialog"`, Escape-to-close.
+
+---
+
+## 🧱 Teknologi
+
+- **Next.js 15** (App Router)
+- **Tailwind CSS v4**
+- **TypeScript**
+- **TMDB API (v3)**
+
+---
+
+## 🖼️ Screenshot
+
+Letakkan gambar di `/public` lalu rujuk di sini.
+
+```md
+![Home](./public/home.png)
+![Detail](./public/detail.png)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🚀 Menjalankan Secara Lokal
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Prasyarat
+- **Node.js 20+**
+- **TMDB API Key (v3)** — daftar gratis: https://www.themoviedb.org/
 
-## Learn More
+### Setup
+```bash
+# 1) install dependencies
+npm install
 
-To learn more about Next.js, take a look at the following resources:
+# 2) buat file environment
+cp .env.local.example .env.local   # jika tidak ada, buat manual
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**`.env.local`**
+```env
+TMDB_API_KEY=ISI_API_KEY_TMDB_ANDA
+TMDB_API_LANG=id-ID
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+> Semua request ke TMDB dilakukan di **Server Components / Route Handlers** agar API key aman (tidak diekspos ke browser).
 
-## Deploy on Vercel
+### Jalankan
+```bash
+npm run dev
+# buka http://localhost:3000
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📁 Struktur Direktori (ringkas)
+
+```
+app/
+  api/movies/batch/route.ts   # API batched detail untuk Favorites
+  discover/page.tsx           # Discover by Genre
+  favorites/page.tsx          # Halaman Favorites
+  movies/[id]/page.tsx        # Detail film + trailer modal
+  search/page.tsx             # Hasil pencarian
+  sitemap.ts                  # (opsional) SEO
+  robots.ts                   # (opsional) SEO
+  layout.tsx
+  globals.css                 # Tailwind v4 CSS-first (@theme inline)
+components/
+  NavBar.tsx
+  SearchBar.tsx
+  MovieCard.tsx
+  MovieGrid.tsx
+  Pagination.tsx
+  CategoryTabs.tsx
+  TrailerPlayer.tsx
+  FavoriteButton.tsx
+  GenreFilter.tsx
+  SectionHeader.tsx
+lib/
+  tmdb.ts                     # Helper TMDB (fetch, images, videos, discover)
+  types.ts
+public/
+  og.png                      # (opsional) OG image default
+```
+
+## ⚙️ Script NPM
+
+```bash
+npm run dev      # dev server
+npm run build    # production build
+npm run start    # start prod server (setelah build)
+```
+
+## 🙏 Kredit
+
+- Data & poster oleh **[TMDB](https://www.themoviedb.org/)**.  
+  Aplikasi ini menggunakan API TMDB namun tidak disponsori/berafiliasi resmi.
+
+---
